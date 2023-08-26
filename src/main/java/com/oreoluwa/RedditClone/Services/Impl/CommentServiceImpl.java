@@ -6,6 +6,7 @@ import com.oreoluwa.RedditClone.Entities.NotificationEmail;
 import com.oreoluwa.RedditClone.Entities.Post;
 import com.oreoluwa.RedditClone.Entities.User;
 import com.oreoluwa.RedditClone.ExceptionHandlers.PostNotFoundException;
+import com.oreoluwa.RedditClone.ExceptionHandlers.SpringRedditException;
 import com.oreoluwa.RedditClone.Mappers.CommentMapper;
 import com.oreoluwa.RedditClone.Repositories.CommentRepository;
 import com.oreoluwa.RedditClone.Repositories.PostRepository;
@@ -37,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
     private final UserRepository userRepository;
     private final AuthenticationService authenticationService;
     private final MailService mailService;
-
+    // How to generate Test hold CMD + SHIFT + T
     @Override
     public void createComment(CommentDto commentDto) {
         Post post = postRepository.findById(commentDto.getPostId())
@@ -74,5 +75,12 @@ public class CommentServiceImpl implements CommentService {
         mailService.sendMail(new NotificationEmail(
                 user.getUsername() + " Commented on your post",
                 user.getEmail(), message));
+    }
+
+    public boolean containsSwearWords(String comment) { // added for testing
+        if (comment.contains("shit")) {
+            throw new SpringRedditException("Comments contains unacceptable language");
+        }
+        return false;
     }
 }
